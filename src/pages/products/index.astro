@@ -1,0 +1,61 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getProducts } from '../../lib/woocommerce';
+
+const page = Number(Astro.url.searchParams.get('page') ?? 1);
+const search = Astro.url.searchParams.get('search') ?? '';
+
+const params: Record<string, string | number> = { per_page: 24, page };
+if (search) params.search = search;
+
+const products = await getProducts(params);
+---
+
+<Layout title="商品列表" description="瀏覽所有商品">
+  <h1 style="font-size: 2rem; font-weight: 700; margin-bottom: 1.5rem;">商品列表</h1>
+
+  <form method="get" style="margin-bottom: 2rem; display: flex; gap: 0.5rem;">
+    <input
+      type="text"
+      name="search"
+      value={search}
+      placeholder="搜尋商品..."
+      style="flex: 1; padding: 0.75rem 1rem; border: 1px solid #d1d5db; border-radius: 8px; font-size: 1rem;"
+    />
+    <button type="submit" style="background: #1a1a1a; color: #fff; border: none; border-radius: 8px; padding: 0.75rem 1.5rem; cursor: pointer;">搜尋</button>
+  </form>
+
+  {products.length === 0 ? (
+    <p style="text-align: center; color: #6b7280; padding: 4rem;">找不到商品</p>
+  ) : (
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1.5rem;">
+      {products.map((product: any) => (
+        <a href={`/products/${product.slug}`} style="background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; display: block;">
+          {product.images?.[0] && (
+            <img src={product.images[0].src} alt={product.name}
+              width="400" height="400"
+              style="width: 100%; aspect-ratio: 1; object-fit: cover;" />
+          )}
+          <div style="padding: 1rem;">
+            <h3 style="font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem;">{product.name}</h3>
+            <p style="font-weight: 700;" set:html={product.price_html} />
+            {product.stock_status === 'outofstock' && (
+              <span style="font-size: 0.75rem; color: #ef4444; display: block; margin-top: 4px;">缺貨中</span>
+            )}
+          </div>
+        </a>
+      ))}
+    </div>
+  )}
+
+  <div style="display: flex; justify-content: center; gap: 1rem; margin-top: 2rem;">
+    {page > 1 && (
+      <a href={`/products?page=${page - 1}${search ? `&search=${search}` : ''}`}
+        style="border: 1px solid #d1d5db; border-radius: 8px; padding: 0.5rem 1.5rem;">← 上一頁</a>
+    )}
+    {products.length === 24 && (
+      <a href={`/products?page=${page + 1}${search ? `&search=${search}` : ''}`}
+        style="border: 1px solid #d1d5db; border-radius: 8px; padding: 0.5rem 1.5rem;">下一頁 →</a>
+    )}
+  </div>
+</Layout>

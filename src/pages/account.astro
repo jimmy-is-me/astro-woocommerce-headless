@@ -1,0 +1,9 @@
+---
+import Layout from '../layouts/Layout.astro';
+import AccountDashboard from '../components/AccountDashboard.tsx';
+---
+
+<Layout title="會員中心 - 我的商店">
+  <h1 style="font-size: 2rem; font-weight: 700; margin-bottom: 2rem;">會員中心</h1>
+  <AccountDashboard client:load />
+</Layout>

@@ -1,0 +1,9 @@
+---
+import Layout from '../layouts/Layout.astro';
+import CartWidget from '../components/CartWidget.tsx';
+---
+
+<Layout title="購物車 - 我的商店">
+  <h1 style="font-size: 2rem; font-weight: 700; margin-bottom: 2rem;">購物車</h1>
+  <CartWidget client:load />
+</Layout>

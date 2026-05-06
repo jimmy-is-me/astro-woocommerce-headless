@@ -1,0 +1,38 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getProducts, getCategories } from '../lib/woocommerce';
+
+const products = await getProducts({ per_page: 8, featured: true }).catch(() =>
+  getProducts({ per_page: 8 })
+);
+---
+
+<Layout title="首頁 - 我的商店" description="探索我們精選商品">
+  <section style="text-align: center; padding: 4rem 1rem; background: #1a1a1a; color: #fff; border-radius: 16px; margin-bottom: 3rem;">
+    <h1 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 1rem;">高品質商品</h1>
+    <p style="font-size: 1.25rem; color: #d1d5db; margin-bottom: 2rem;">精選商品，快速出貨</p>
+    <a href="/products" style="background: #fff; color: #1a1a1a; border-radius: 8px; padding: 0.75rem 2.5rem; font-weight: 700; font-size: 1.1rem;">立即選購</a>
+  </section>
+
+  <section>
+    <h2 style="font-size: 1.75rem; font-weight: 700; margin-bottom: 1.5rem;">精選商品</h2>
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1.5rem;">
+      {products.map((product: any) => (
+        <a href={`/products/${product.slug}`} style="background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; display: block;">
+          {product.images?.[0] && (
+            <img src={product.images[0].src} alt={product.name}
+              width="400" height="400"
+              style="width: 100%; aspect-ratio: 1; object-fit: cover;" />
+          )}
+          <div style="padding: 1rem;">
+            <h3 style="font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem;">{product.name}</h3>
+            <p style="font-weight: 700; color: #1a1a1a;" set:html={product.price_html} />
+          </div>
+        </a>
+      ))}
+    </div>
+    <div style="text-align: center; margin-top: 2rem;">
+      <a href="/products" style="border: 2px solid #1a1a1a; border-radius: 8px; padding: 0.75rem 2rem; font-weight: 700;">查看全部商品</a>
+    </div>
+  </section>
+</Layout>
