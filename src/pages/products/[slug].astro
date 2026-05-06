@@ -1,7 +1,13 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { getProductBySlug } from '../../lib/woocommerce';
+import { getProducts, getProductBySlug } from '../../lib/woocommerce';
 import AddToCartButton from '../../components/AddToCartButton.tsx';
+
+// output: 'static' 必須實作 getStaticPaths()
+export async function getStaticPaths() {
+  const products = await getProducts({ per_page: 100 });
+  return products.map((p: any) => ({ params: { slug: p.slug } }));
+}
 
 const { slug } = Astro.params;
 const product = await getProductBySlug(slug!);

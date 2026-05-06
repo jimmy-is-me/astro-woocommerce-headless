@@ -1,21 +1,14 @@
 import { defineConfig } from 'astro/config';
 import react from '@astrojs/react';
 
-// 如果要部署到 Cloudflare Pages，取消下面兩行的註解：
-// import cloudflare from '@astrojs/cloudflare';
-// 並把 output 改成 'server'，adapter 設為 cloudflare()
+// Cloudflare Pages 部署：使用 output: 'static'
+// 所有頁面在 build 時靜態生成，不需要 adapter
+// 優點：免費、超快、CDN 全球分發、SEO 最佳
+// 如果之後需要 SSR（如動態搜尋、會員頁面），改成下面的 server 模式
 
 export default defineConfig({
-  // output: 'static' 代表全部靜態 SSG
-  // output: 'hybrid' 代表大部分靜態，部分 SSR（建議電商用這個）
-  // output: 'server' 代表全部 SSR（需配合 adapter，如 Cloudflare Pages）
-  output: 'hybrid',
-
+  output: 'static',
   integrations: [
     react()
   ],
-
-  // Cloudflare Pages 部署時改成：
-  // adapter: cloudflare(),
-  // 並執行：npm install @astrojs/cloudflare
 });
